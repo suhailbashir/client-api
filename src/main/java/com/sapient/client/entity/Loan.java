@@ -43,7 +43,7 @@ public class Loan implements Serializable {
 	private Long id;
 	
 	@Column(name="LOAN_ACCOUNT_NUMBER",nullable = false,unique = true)
-	private UUID loanAccountNumber;
+	private String loanAccountNumber;
 
 	@Column(name="LOAN_TYPE",nullable = false)
 	private String loanType;
