@@ -8,7 +8,7 @@ import com.sapient.client.entity.Loan;
 
 public interface ClientService {
 	
-	public Client saveClient(ClientBean customerBean);
+	public ClientBean saveClient(ClientBean customerBean);
 	public List<Loan> findLoansOfClient(Long customerId);
 	public List<Client> findAllClients();
 	public Client updateClient(ClientBean customerBean);

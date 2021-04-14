@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Client implements Serializable {
 
 	private static final long serialVersionUID = 1L;

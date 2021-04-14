@@ -28,9 +28,9 @@ public class ClientResource {
 	
 	
 	@PostMapping("/client")
-	public ResponseEntity<Client>saveClient(@RequestBody ClientBean bean){
-		Client Client=clientService.saveClient(bean);
-		return ResponseEntity.status(HttpStatus.CREATED).body(Client);
+	public ResponseEntity<ClientBean>saveClient(@RequestBody ClientBean bean){
+		ClientBean clientBean=clientService.saveClient(bean);
+		return ResponseEntity.status(HttpStatus.CREATED).body(clientBean);
 	}
 	
 	@GetMapping("/client/{id}")
