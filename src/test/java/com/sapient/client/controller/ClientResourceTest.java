@@ -1,6 +1,7 @@
 package com.sapient.client.controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class ClientResourceTest {
 	ObjectMapper mapper;
 
 	@Test
-	public void savClientTest() throws Exception {
+	public void saveClientTest() throws Exception {
 		ClientBean bean = createClientBean();
 		
 		when(clientService.saveClient(bean)).thenReturn(bean);
@@ -56,7 +57,9 @@ public class ClientResourceTest {
 		
 	}
 
-	private ClientBean createClientBean() {
+	
+
+	public  ClientBean createClientBean() {
 
 		EmiBean emiBean = EmiBean.builder().id(5L).number(1L).amount(100.0).dueDate(LocalDate.now()).build();
 

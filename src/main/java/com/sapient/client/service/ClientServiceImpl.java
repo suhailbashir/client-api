@@ -36,9 +36,11 @@ public class ClientServiceImpl implements ClientService {
 		
 		transformClientBeanIntoClient(clientBean, listOfLoans, addresses);
 		Client client= Client.builder().clientName(clientBean.getClientName()).build();
+		
 		addresses.forEach(address->{
 			address.setClient(client);
 		});
+		
 		listOfLoans.stream().forEach(loan->{
 			loan.setClient(client);
 		});
@@ -54,33 +56,17 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public List<LoanBean> findLoansOfClient(Long clientId) {
-		log.info("ClientServiceImpl::findLoansOfClient::clientId: {}",clientId);
-		
-		List<LoanBean>listOfLoanBeans=new ArrayList<>();
+	public ClientBean findClientById(Long clientId) {
 		
 			Optional<Client> client = clientRepository.findById(clientId);
+			List<LoanBean> listOfLoanBeans = new ArrayList<>();
+			List<AddressBean> addressesBeans = new ArrayList<>();
 			
 			if (client.isPresent()) {
-				List<Loan> listOfLoans = client.get().getLoans();
-
-				listOfLoans.stream().forEach(loan -> {
-					List<EMI> emiList = loan.getListOfEmis();
-					List<EmiBean> emiBeanList = new ArrayList<>();
-
-					emiList.stream().forEach(emi -> {
-						EmiBean emiBean = EmiBean.builder().id(emi.getId()).amount(emi.getAmount()).dueDate(emi.getDueDate()).number(emi.getNumber()).build();
-						emiBeanList.add(emiBean);
-					});
-
-					LoanBean loanBean = LoanBean.builder().id(loan.getId()).loanAccountNumber(loan.getLoanAccountNumber()).loanType(loan.getLoanType()).listOfEmis(emiBeanList).build();
-					listOfLoanBeans.add(loanBean);
-				});
-			}
+				transformClientIntoClientBean(client.get(), listOfLoanBeans, addressesBeans);
 			
-		
-		
-		return listOfLoanBeans;
+			}
+		return ClientBean.builder().id(client.get().getId()).clientName(client.get().getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
 	}
 
 	@Override

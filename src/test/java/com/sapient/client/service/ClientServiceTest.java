@@ -1,19 +1,19 @@
 package com.sapient.client.service;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.sapient.client.beans.AddressBean;
 import com.sapient.client.beans.ClientBean;
@@ -25,32 +25,25 @@ import com.sapient.client.entity.EMI;
 import com.sapient.client.entity.Loan;
 import com.sapient.client.repository.ClientRepository;
 
+@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 public class ClientServiceTest {
 
+	@MockBean
+	private ClientRepository clientRepository;
+	
+	@InjectMocks
+	private ClientServiceImpl clientServiceImpl;
+	
 
 	@Test
 	public void saveClientTest() {
-
-		Client client = createClient();
+		Client client=createClient();
+		Mockito.when(clientRepository.save(client)).thenReturn(client);
 		
-		ClientRepository clientRepository = mock(ClientRepository.class);
+		clientServiceImpl.saveClient(createClientBean());
 		
-		ClientBean clientBean = createClientBean();
-		ArgumentCaptor<ArrayList> captor = ArgumentCaptor.forClass(ArrayList.class);
-		ClientServiceImplFortesting target = spy(new ClientServiceImplFortesting());
-		doNothing().when(target).transformClientBeanIntoClient(Mockito.eq(clientBean), captor.capture(),captor.capture());
-		
-		ReflectionTestUtils.setField(target, "clientRepository", clientRepository);
-		when(clientRepository.save(client)).thenReturn(client);
-		
-		target.saveClient(clientBean);
-	}
-	
-	class ClientServiceImplFortesting extends ClientServiceImpl{
-		@Override
-		protected void transformClientIntoClientBean(Client client, List<LoanBean> listOfLoanBeans, List<AddressBean> addressesBeans) {
-			
-		}
+		assertFalse(false);
 	}
 
 	private Client createClient() {

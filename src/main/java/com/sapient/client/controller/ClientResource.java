@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sapient.client.beans.ClientBean;
-import com.sapient.client.beans.LoanBean;
 import com.sapient.client.service.ClientService;
 
 @RestController
@@ -33,8 +32,8 @@ public class ClientResource {
 	}
 	
 	@GetMapping("/client/{id}")
-	public ResponseEntity<List<LoanBean>>getAllLoansOfClient(@PathVariable(name = "id") Long id){
-		return ResponseEntity.status(HttpStatus.OK).body(clientService.findLoansOfClient(id));
+	public ResponseEntity<ClientBean>getClientById(@PathVariable(name = "id") Long id){
+		return ResponseEntity.status(HttpStatus.OK).body(clientService.findClientById(id));
 	}
 	
 	@GetMapping("/client")
