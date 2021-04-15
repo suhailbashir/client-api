@@ -1,0 +1,32 @@
+{
+  "clientName": "Suhail",
+  "loans": [
+    {
+      "loanAccountNumber": "123_LAN_222",
+      "loanType": "Saving",
+      "listOfEmis": [
+        {
+          "number": 1,
+          "amount": 100,
+          "dueDate": "2021-04-14"
+        }
+      ]
+    }
+  ],
+  "addresses": [
+    {
+      "street": "124",
+      "city": "Jaipur",
+      "zip": "67676",
+      "state": "Rajasthan",
+      "country": "India"
+    },
+    {
+      "street": "12",
+      "city": "Srinagar",
+      "zip": "8888",
+      "state": "JK",
+      "country": "India"
+    }
+  ]
+}

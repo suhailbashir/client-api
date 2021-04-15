@@ -117,9 +117,26 @@ public class ClientServiceImpl implements ClientService {
 		
 		if (client.isPresent()) {
 			transformClientBeanIntoClient(clientBean, listOfLoans, addresses);
-			Client	clientNew = clientRepository.save(Client.builder().clientName(clientBean.getClientName()).loans(listOfLoans).addresses(addresses).build());
-			transformClientIntoClientBean(clientNew, listOfLoanBeans, addressesBeans);
-			bean=ClientBean.builder().id(clientNew.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
+			
+			Client clientNew= Client.builder().id(clientBean.getId()).clientName(clientBean.getClientName()).build();
+			
+			listOfLoans.stream().forEach(loan->{
+				loan.setClient(clientNew);
+			});
+			
+			addresses.forEach(address->{
+				address.setClient(clientNew);
+			});
+			
+			clientNew.setLoans(listOfLoans);
+			clientNew.setAddresses(addresses);
+			
+			Client	updatedClient = clientRepository.save(clientNew);
+			
+			transformClientIntoClientBean(updatedClient, listOfLoanBeans, addressesBeans);
+			bean=ClientBean.builder().id(updatedClient.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
+		}else {
+			throw new RuntimeException("Client with such id doesn't exist");
 		}
 		return bean;
 	}
@@ -155,7 +172,7 @@ public class ClientServiceImpl implements ClientService {
 	private void transformClientBeanIntoClient(ClientBean clientBean, List<Loan> listOfLoans, List<Address> addresses) {
 		
 		clientBean.getLoans().forEach(loanBean -> {
-			Loan loan = Loan.builder().loanAccountNumber(loanBean.getLoanAccountNumber()).loanType(loanBean.getLoanType()).build();
+			Loan loan = Loan.builder().loanAccountNumber(loanBean.getLoanAccountNumber()).id(loanBean.getId()).loanType(loanBean.getLoanType()).build();
 			List<EMI> emis = new ArrayList<>();
 		
 			loanBean.getListOfEmis().stream().forEach(emiBean -> {
@@ -168,9 +185,8 @@ public class ClientServiceImpl implements ClientService {
 		});
 		
 		clientBean.getAddresses().forEach(addressBean -> {
-			Address address = Address.builder().street(addressBean.getStreet()).city(addressBean.getCity()).State(addressBean.getState()).Country(addressBean.getCountry()).zip(addressBean.getZip()).build();
+			Address address = Address.builder().id(addressBean.getId()).street(addressBean.getStreet()).city(addressBean.getCity()).State(addressBean.getState()).Country(addressBean.getCountry()).zip(addressBean.getZip()).build();
 			addresses.add(address);
-		
 		});
 		
 	}
