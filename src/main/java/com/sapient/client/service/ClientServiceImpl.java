@@ -28,8 +28,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientBean saveClient(ClientBean clientBean) {
-		log.info("ClientServiceImpl::saveClient::clientBean: {}",clientBean);
-		
+
 		List<Loan> listOfLoans = new ArrayList<>();
 		List<Address> addresses = new ArrayList<>();
 		List<LoanBean> listOfLoanBeans = new ArrayList<>();
@@ -148,7 +147,7 @@ public class ClientServiceImpl implements ClientService {
 		return findAllClients();
 	}
 	
-	private void transformClientIntoClientBean(Client client, List<LoanBean> listOfLoanBeans, List<AddressBean> addressesBeans) {
+	protected void transformClientIntoClientBean(Client client, List<LoanBean> listOfLoanBeans, List<AddressBean> addressesBeans) {
 		
 		
 		client.getLoans().forEach(loan -> {
@@ -169,7 +168,7 @@ public class ClientServiceImpl implements ClientService {
 		
 	}
 
-	private void transformClientBeanIntoClient(ClientBean clientBean, List<Loan> listOfLoans, List<Address> addresses) {
+	protected void transformClientBeanIntoClient(ClientBean clientBean, List<Loan> listOfLoans, List<Address> addresses) {
 		
 		clientBean.getLoans().forEach(loanBean -> {
 			Loan loan = Loan.builder().loanAccountNumber(loanBean.getLoanAccountNumber()).id(loanBean.getId()).loanType(loanBean.getLoanType()).build();
