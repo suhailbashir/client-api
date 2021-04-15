@@ -7,14 +7,17 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.fasterxml.jackson.databind.Module.SetupContext;
 import com.sapient.client.beans.AddressBean;
 import com.sapient.client.beans.ClientBean;
 import com.sapient.client.beans.EmiBean;
@@ -31,7 +34,10 @@ public class ClientResourceTest {
 	@InjectMocks
 	ClientResource clientResource;
 	
-	
+	@BeforeEach
+	void setup() throws Exception {
+		MockitoAnnotations.openMocks(this);
+	}
 
 	@Test
 	@Order(1)
@@ -39,7 +45,7 @@ public class ClientResourceTest {
 	public void saveClient() {
 		
 		ClientBean clientBean=createClientBean();
-		when(clientResource.saveClient(clientBean)).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(clientBean));
+		when(clientService.saveClient(clientBean)).thenReturn(clientBean);
 		assertEquals(clientBean, clientService.saveClient(clientBean));
 	}
 

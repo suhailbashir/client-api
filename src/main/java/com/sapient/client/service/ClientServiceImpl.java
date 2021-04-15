@@ -3,7 +3,6 @@ package com.sapient.client.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,195 +28,151 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientBean saveClient(ClientBean clientBean) {
-
-		List<Loan> listOfLoans = new ArrayList<Loan>();
-		List<Address> addresses = new ArrayList<Address>();
+		log.info("ClientServiceImpl::saveClient::clientBean: {}",clientBean);
 		
-		List<LoanBean> listOfLoansbeaBeans = new ArrayList<LoanBean>();
-		List<AddressBean> addressesBeans = new ArrayList<AddressBean>();
+		List<Loan> listOfLoans = new ArrayList<>();
+		List<Address> addresses = new ArrayList<>();
+		List<LoanBean> listOfLoanBeans = new ArrayList<>();
+		List<AddressBean> addressesBeans = new ArrayList<>();
 		
-		transformClientBean(clientBean, listOfLoans, addresses);
+		transformClientBeanIntoClient(clientBean, listOfLoans, addresses);
+		Client client= Client.builder().clientName(clientBean.getClientName()).build();
+		addresses.forEach(address->{
+			address.setClient(client);
+		});
+		listOfLoans.stream().forEach(loan->{
+			loan.setClient(client);
+		});
 		
-		Client client = clientRepository.save(Client.builder()
-													.clientName(clientBean.getClientName())
-													.loans(listOfLoans)
-													.addresses(addresses)
-													.build());
+		client.setLoans(listOfLoans);
+		client.setAddresses(addresses);
 		
-		transformClient(client, listOfLoansbeaBeans, addressesBeans);
-
-		return ClientBean.builder()
-						 .id(client.getId())
-						 .clientName(clientBean.getClientName())
-						 .loans(listOfLoansbeaBeans)
-						 .addresses(addressesBeans)
-						 .build();
-
+		Client savedClient = clientRepository.save(client);
+		
+		transformClientIntoClientBean(savedClient, listOfLoanBeans, addressesBeans);
+		
+		return ClientBean.builder().id(savedClient.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
 	}
 
-	private void transformClient(Client client, List<LoanBean> listOfLoansbeaBeans, List<AddressBean> addressesBeans) {
-		client.getLoans().forEach(loan -> {
+	@Override
+	public List<LoanBean> findLoansOfClient(Long clientId) {
+		log.info("ClientServiceImpl::findLoansOfClient::clientId: {}",clientId);
+		
+		List<LoanBean>listOfLoanBeans=new ArrayList<>();
+		
+			Optional<Client> client = clientRepository.findById(clientId);
 			
-			List<EmiBean> emiBeans = new ArrayList<>();
+			if (client.isPresent()) {
+				List<Loan> listOfLoans = client.get().getLoans();
 
-			loan.getListOfEmis().stream().forEach(emi -> {
+				listOfLoans.stream().forEach(loan -> {
+					List<EMI> emiList = loan.getListOfEmis();
+					List<EmiBean> emiBeanList = new ArrayList<>();
+
+					emiList.stream().forEach(emi -> {
+						EmiBean emiBean = EmiBean.builder().id(emi.getId()).amount(emi.getAmount()).dueDate(emi.getDueDate()).number(emi.getNumber()).build();
+						emiBeanList.add(emiBean);
+					});
+
+					LoanBean loanBean = LoanBean.builder().id(loan.getId()).loanAccountNumber(loan.getLoanAccountNumber()).loanType(loan.getLoanType()).listOfEmis(emiBeanList).build();
+					listOfLoanBeans.add(loanBean);
+				});
+			}
 			
-				EmiBean emiBean = EmiBean.builder()
-										 .id(emi.getId())
-							             .amount(emi.getAmount())
-							             .dueDate(emi.getDueDate())
-							             .number(emi.getNumber())
-							             .build();
-				
+		
+		
+		return listOfLoanBeans;
+	}
+
+	@Override
+	public List<ClientBean> findAllClients() {
+		log.info("ClientServiceImpl::findAllClients::");
+		List<Client>listOfClients=clientRepository.findAll();
+		List<ClientBean>listOfClientBeans=new ArrayList<>();
+		
+		listOfClients.stream().forEach(client->{
+			
+			List<LoanBean> listOfLoanBeans = new ArrayList<>();
+			List<AddressBean> addressesBeans = new ArrayList<>();;
+			transformClientIntoClientBean(client, listOfLoanBeans, addressesBeans);
+
+			listOfClientBeans.add(ClientBean.builder().id(client.getId()).clientName(client.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build());
+		}
+		
+		);
+		return listOfClientBeans;
+		
+	}
+
+	@Override
+	public ClientBean updateClient(ClientBean clientBean) {
+		
+		
+		Optional<Client> client = clientRepository.findById(clientBean.getId());
+		List<Loan> listOfLoans = new ArrayList<>();
+		List<Address> addresses = new ArrayList<>();
+		List<LoanBean> listOfLoanBeans = new ArrayList<>();
+		List<AddressBean> addressesBeans = new ArrayList<>();
+		ClientBean bean=null;
+		
+		if (client.isPresent()) {
+			transformClientBeanIntoClient(clientBean, listOfLoans, addresses);
+			Client	clientNew = clientRepository.save(Client.builder().clientName(clientBean.getClientName()).loans(listOfLoans).addresses(addresses).build());
+			transformClientIntoClientBean(clientNew, listOfLoanBeans, addressesBeans);
+			bean=ClientBean.builder().id(clientNew.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
+		}
+		return bean;
+	}
+	
+	@Override
+	public List<ClientBean> deleteClientById(Long id) {
+	
+		clientRepository.deleteById(id);
+		return findAllClients();
+	}
+	
+	private void transformClientIntoClientBean(Client client, List<LoanBean> listOfLoanBeans, List<AddressBean> addressesBeans) {
+		
+		
+		client.getLoans().forEach(loan -> {
+			List<EmiBean> emiBeans = new ArrayList<>();
+			loan.getListOfEmis().stream().forEach(emi -> {
+				EmiBean emiBean = EmiBean.builder().id(emi.getId()).amount(emi.getAmount()).dueDate(emi.getDueDate()).number(emi.getNumber()).build();
 				emiBeans.add(emiBean);
 			});
 
-			LoanBean loanBean = LoanBean.builder()
-										.id(loan.getId())
-										.loanAccountNumber(loan.getLoanAccountNumber())
-										.loanType(loan.getLoanType())
-										.listOfEmis(emiBeans)
-										.build();
-			
-			listOfLoansbeaBeans.add(loanBean);
+			LoanBean loanBean = LoanBean.builder().id(loan.getId()).loanAccountNumber(loan.getLoanAccountNumber()).loanType(loan.getLoanType()).listOfEmis(emiBeans).build();
+			listOfLoanBeans.add(loanBean);
 		});
-
-		
 
 		client.getAddresses().forEach(address -> {
-			AddressBean addressBean = AddressBean.builder()
-									 .id(address.getId())
-									 .street(address.getStreet())
-									 .city(address.getCity())
-									 .State(address.getState())
-									 .Country(address.getCountry())
-									 .zip(address.getZip())
-									 .build();
-			
+			AddressBean addressBean = AddressBean.builder().id(address.getId()).street(address.getStreet()).city(address.getCity()).State(address.getState()).Country(address.getCountry()) .zip(address.getZip()).build();
 			addressesBeans.add(addressBean);
 		});
+		
 	}
 
-	private void transformClientBean(ClientBean clientBean, List<Loan> listOfLoans, List<Address> addresses) {
-				
+	private void transformClientBeanIntoClient(ClientBean clientBean, List<Loan> listOfLoans, List<Address> addresses) {
+		
 		clientBean.getLoans().forEach(loanBean -> {
-				
-				List<EMI> emis = new ArrayList<>();
+			Loan loan = Loan.builder().loanAccountNumber(loanBean.getLoanAccountNumber()).loanType(loanBean.getLoanType()).build();
+			List<EMI> emis = new ArrayList<>();
 		
-				loanBean.getListOfEmis().stream().forEach(emiBean -> {
-				
-					EMI emi = EMI.builder()
-								 .amount(emiBean.getAmount())
-								 .dueDate(emiBean.getDueDate())
-								 .number(emiBean.getNumber())
-								 .build();
-					
-					emis.add(emi);
-				});
-		
-				Loan loan = Loan.builder().loanAccountNumber(loanBean.getLoanAccountNumber())
-						.loanType(loanBean.getLoanType()).listOfEmis(emis).build();
-				
-				listOfLoans.add(loan);
+			loanBean.getListOfEmis().stream().forEach(emiBean -> {
+				EMI emi = EMI.builder().amount(emiBean.getAmount()).dueDate(emiBean.getDueDate()).number(emiBean.getNumber()).loan(loan).build();
+				emis.add(emi);
+			});
+			
+			loan.setListOfEmis(emis);
+			listOfLoans.add(loan);
 		});
-		
-		
 		
 		clientBean.getAddresses().forEach(addressBean -> {
-				Address address = Address.builder()
-										 .street(addressBean.getStreet())
-										 .city(addressBean.getCity())
-										 .State(addressBean.getState())
-										 .Country(addressBean.getCountry())
-										 .zip(addressBean.getZip())
-										 .build();
-				
-				addresses.add(address);
+			Address address = Address.builder().street(addressBean.getStreet()).city(addressBean.getCity()).State(addressBean.getState()).Country(addressBean.getCountry()).zip(addressBean.getZip()).build();
+			addresses.add(address);
+		
 		});
-	}
-
-	@Override
-	public List<Loan> findLoansOfClient(Long ClientId) {
-		Optional<Client> Client = clientRepository.findById(ClientId);
-		List<Loan> listOfLoans = new ArrayList<>();
-		if (Client.isPresent()) {
-
-			Client.get().getLoans().stream().forEach(loan -> {
-				listOfLoans.add(loan);
-			});
-		}
-		return listOfLoans;
-	}
-
-	@Override
-	public List<Client> findAllClients() {
-
-		List<Client> ListOfClients = clientRepository.findAll();
-		return ListOfClients;
-	}
-
-	@Override
-	public Client updateClient(ClientBean clientBean) {
-
-		log.info("Client bean {}", clientBean);
-		Optional<Client> client = clientRepository.findById(clientBean.getId());
-
-		if (client.isPresent()) {
-			client.get().setClientName(clientBean.getClientName());
-
-			clientBean.getLoans().stream().forEach(loanBean -> {
-
-				client.get().getLoans().stream().forEach(loann -> {
-					if (loanBean.getId() == loann.getId()) {
-
-						loann.setLoanAccountNumber(loanBean.getLoanAccountNumber());
-						loanBean.setLoanType(loanBean.getLoanType());
-
-						List<EmiBean> emisBean = loanBean.getListOfEmis();
-
-						List<EMI> emis = client.get().getLoans().stream().flatMap(loan -> loan.getListOfEmis().stream())
-								.collect(Collectors.toList());
-
-						emisBean.stream().forEach(emiBean -> {
-							emis.stream().forEach(emi -> {
-								if (emi.getId() == emiBean.getId()) {
-									emi.setAmount(emiBean.getAmount());
-									emi.setDueDate(emiBean.getDueDate());
-									emi.setNumber(emiBean.getNumber());
-								}
-							});
-						});
-
-					}
-				});
-
-			});
-
-			clientBean.getAddresses().stream().forEach(addressBean -> {
-				client.get().getAddresses().stream().forEach(ad -> {
-					if (ad.getId() == addressBean.getId()) {
-						ad.setCity(addressBean.getCity());
-						ad.setStreet(addressBean.getStreet());
-						ad.setState(addressBean.getState());
-						ad.setZip(addressBean.getZip());
-						ad.setCountry(addressBean.getCountry());
-					}
-				});
-
-			});
-
-		} else {
-			throw new IllegalArgumentException("Customer with such id doesn't exist.");
-		}
-
-		return clientRepository.save(client.get());
-	}
-
-	@Override
-	public List<Client> deleteClientById(Long id) {
-
-		clientRepository.deleteById(id);
-		return findAllClients();
+		
 	}
 
 }

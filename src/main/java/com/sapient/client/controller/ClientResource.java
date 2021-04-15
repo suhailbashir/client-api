@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sapient.client.beans.ClientBean;
-import com.sapient.client.entity.Client;
-import com.sapient.client.entity.Loan;
+import com.sapient.client.beans.LoanBean;
 import com.sapient.client.service.ClientService;
 
 @RestController
@@ -28,28 +27,28 @@ public class ClientResource {
 	
 	
 	@PostMapping("/client")
-	public ResponseEntity<ClientBean>saveClient(@RequestBody ClientBean bean){
+	public ClientBean saveClient(@RequestBody ClientBean bean){
 		ClientBean clientBean=clientService.saveClient(bean);
-		return ResponseEntity.status(HttpStatus.CREATED).body(clientBean);
+		return clientBean;
 	}
 	
 	@GetMapping("/client/{id}")
-	public ResponseEntity<List<Loan>>getAllLoansOfClient(@PathVariable(name = "id") Long id){
+	public ResponseEntity<List<LoanBean>>getAllLoansOfClient(@PathVariable(name = "id") Long id){
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findLoansOfClient(id));
 	}
 	
 	@GetMapping("/client")
-	public ResponseEntity<List<Client>>getAllClients(){
+	public ResponseEntity<List<ClientBean>>getAllClients(){
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findAllClients());
 	}
 	
 	@PutMapping("/client")
-	public ResponseEntity<Client>updateClient(@RequestBody ClientBean bean){
+	public ResponseEntity<ClientBean>updateClient(@RequestBody ClientBean bean){
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(bean));
 	}
 	
 	@DeleteMapping("/client/{id}")
-	public ResponseEntity<List<Client>>deleteClient(@PathVariable(name = "id") Long id){
+	public ResponseEntity<List<ClientBean>>deleteClient(@PathVariable(name = "id") Long id){
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.deleteClientById(id));
 	}
 	
