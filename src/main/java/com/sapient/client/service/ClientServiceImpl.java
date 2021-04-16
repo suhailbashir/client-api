@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sapient.client.beans.AddressBean;
-import com.sapient.client.beans.ClientBean;
-import com.sapient.client.beans.EmiBean;
-import com.sapient.client.beans.LoanBean;
+import com.sapient.client.beans.AddressDto;
+import com.sapient.client.beans.ClientDto;
+import com.sapient.client.beans.EmiDto;
+import com.sapient.client.beans.LoanDto;
 import com.sapient.client.entity.Address;
 import com.sapient.client.entity.Client;
 import com.sapient.client.entity.EMI;
@@ -27,12 +27,12 @@ public class ClientServiceImpl implements ClientService {
 	ClientRepository clientRepository;
 
 	@Override
-	public ClientBean saveClient(ClientBean clientBean) {
+	public ClientDto saveClient(ClientDto clientBean) {
 
 		List<Loan> listOfLoans = new ArrayList<>();
 		List<Address> addresses = new ArrayList<>();
-		List<LoanBean> listOfLoanBeans = new ArrayList<>();
-		List<AddressBean> addressesBeans = new ArrayList<>();
+		List<LoanDto> listOfLoanBeans = new ArrayList<>();
+		List<AddressDto> addressesBeans = new ArrayList<>();
 		
 		transformClientBeanIntoClient(clientBean, listOfLoans, addresses);
 		Client client= Client.builder().clientName(clientBean.getClientName()).build();
@@ -52,36 +52,36 @@ public class ClientServiceImpl implements ClientService {
 		
 		transformClientIntoClientBean(savedClient, listOfLoanBeans, addressesBeans);
 		
-		return ClientBean.builder().id(savedClient.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
+		return ClientDto.builder().id(savedClient.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
 	}
 
 	@Override
-	public ClientBean findClientById(Long clientId) {
+	public ClientDto findClientById(Long clientId) {
 		
 			Optional<Client> client = clientRepository.findById(clientId);
-			List<LoanBean> listOfLoanBeans = new ArrayList<>();
-			List<AddressBean> addressesBeans = new ArrayList<>();
+			List<LoanDto> listOfLoanBeans = new ArrayList<>();
+			List<AddressDto> addressesBeans = new ArrayList<>();
 			
 			if (client.isPresent()) {
 				transformClientIntoClientBean(client.get(), listOfLoanBeans, addressesBeans);
 			
 			}
-		return ClientBean.builder().id(client.get().getId()).clientName(client.get().getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
+		return ClientDto.builder().id(client.get().getId()).clientName(client.get().getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
 	}
 
 	@Override
-	public List<ClientBean> findAllClients() {
+	public List<ClientDto> findAllClients() {
 		log.info("ClientServiceImpl::findAllClients::");
 		List<Client>listOfClients=clientRepository.findAll();
-		List<ClientBean>listOfClientBeans=new ArrayList<>();
+		List<ClientDto>listOfClientBeans=new ArrayList<>();
 		
 		listOfClients.stream().forEach(client->{
 			
-			List<LoanBean> listOfLoanBeans = new ArrayList<>();
-			List<AddressBean> addressesBeans = new ArrayList<>();;
+			List<LoanDto> listOfLoanBeans = new ArrayList<>();
+			List<AddressDto> addressesBeans = new ArrayList<>();;
 			transformClientIntoClientBean(client, listOfLoanBeans, addressesBeans);
 
-			listOfClientBeans.add(ClientBean.builder().id(client.getId()).clientName(client.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build());
+			listOfClientBeans.add(ClientDto.builder().id(client.getId()).clientName(client.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build());
 		}
 		
 		);
@@ -90,15 +90,14 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public ClientBean updateClient(ClientBean clientBean) {
-		
+	public ClientDto updateClient(ClientDto clientBean) {
 		
 		Optional<Client> client = clientRepository.findById(clientBean.getId());
 		List<Loan> listOfLoans = new ArrayList<>();
 		List<Address> addresses = new ArrayList<>();
-		List<LoanBean> listOfLoanBeans = new ArrayList<>();
-		List<AddressBean> addressesBeans = new ArrayList<>();
-		ClientBean bean=null;
+		List<LoanDto> listOfLoanBeans = new ArrayList<>();
+		List<AddressDto> addressesBeans = new ArrayList<>();
+		ClientDto bean=null;
 		
 		if (client.isPresent()) {
 			transformClientBeanIntoClient(clientBean, listOfLoans, addresses);
@@ -119,7 +118,7 @@ public class ClientServiceImpl implements ClientService {
 			Client	updatedClient = clientRepository.save(clientNew);
 			
 			transformClientIntoClientBean(updatedClient, listOfLoanBeans, addressesBeans);
-			bean=ClientBean.builder().id(updatedClient.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
+			bean=ClientDto.builder().id(updatedClient.getId()).clientName(clientBean.getClientName()).loans(listOfLoanBeans).addresses(addressesBeans).build();
 		}else {
 			throw new RuntimeException("Client with such id doesn't exist");
 		}
@@ -127,34 +126,34 @@ public class ClientServiceImpl implements ClientService {
 	}
 	
 	@Override
-	public List<ClientBean> deleteClientById(Long id) {
+	public List<ClientDto> deleteClientById(Long id) {
 	
 		clientRepository.deleteById(id);
 		return findAllClients();
 	}
 	
-	protected void transformClientIntoClientBean(Client client, List<LoanBean> listOfLoanBeans, List<AddressBean> addressesBeans) {
+	protected void transformClientIntoClientBean(Client client, List<LoanDto> listOfLoanBeans, List<AddressDto> addressesBeans) {
 		
 		
 		client.getLoans().forEach(loan -> {
-			List<EmiBean> emiBeans = new ArrayList<>();
+			List<EmiDto> emiBeans = new ArrayList<>();
 			loan.getListOfEmis().stream().forEach(emi -> {
-				EmiBean emiBean = EmiBean.builder().id(emi.getId()).amount(emi.getAmount()).dueDate(emi.getDueDate()).number(emi.getNumber()).build();
+				EmiDto emiBean = EmiDto.builder().id(emi.getId()).amount(emi.getAmount()).dueDate(emi.getDueDate()).number(emi.getNumber()).build();
 				emiBeans.add(emiBean);
 			});
 
-			LoanBean loanBean = LoanBean.builder().id(loan.getId()).loanAccountNumber(loan.getLoanAccountNumber()).loanType(loan.getLoanType()).listOfEmis(emiBeans).build();
+			LoanDto loanBean = LoanDto.builder().id(loan.getId()).loanAccountNumber(loan.getLoanAccountNumber()).loanType(loan.getLoanType()).listOfEmis(emiBeans).build();
 			listOfLoanBeans.add(loanBean);
 		});
 
 		client.getAddresses().forEach(address -> {
-			AddressBean addressBean = AddressBean.builder().id(address.getId()).street(address.getStreet()).city(address.getCity()).State(address.getState()).Country(address.getCountry()) .zip(address.getZip()).build();
+			AddressDto addressBean = AddressDto.builder().id(address.getId()).street(address.getStreet()).city(address.getCity()).state(address.getState()).country(address.getCountry()) .zip(address.getZip()).build();
 			addressesBeans.add(addressBean);
 		});
 		
 	}
 
-	protected void transformClientBeanIntoClient(ClientBean clientBean, List<Loan> listOfLoans, List<Address> addresses) {
+	protected void transformClientBeanIntoClient(ClientDto clientBean, List<Loan> listOfLoans, List<Address> addresses) {
 		
 		clientBean.getLoans().forEach(loanBean -> {
 			Loan loan = Loan.builder().loanAccountNumber(loanBean.getLoanAccountNumber()).id(loanBean.getId()).loanType(loanBean.getLoanType()).build();
@@ -170,7 +169,7 @@ public class ClientServiceImpl implements ClientService {
 		});
 		
 		clientBean.getAddresses().forEach(addressBean -> {
-			Address address = Address.builder().id(addressBean.getId()).street(addressBean.getStreet()).city(addressBean.getCity()).State(addressBean.getState()).Country(addressBean.getCountry()).zip(addressBean.getZip()).build();
+			Address address = Address.builder().id(addressBean.getId()).street(addressBean.getStreet()).city(addressBean.getCity()).state(addressBean.getState()).country(addressBean.getCountry()).zip(addressBean.getZip()).build();
 			addresses.add(address);
 		});
 		

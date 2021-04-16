@@ -2,13 +2,13 @@ package com.sapient.client.service;
 
 import java.util.List;
 
-import com.sapient.client.beans.ClientBean;
+import com.sapient.client.beans.ClientDto;
 
 public interface ClientService {
 	
-	public ClientBean saveClient(ClientBean clientBean);
-	public ClientBean findClientById(Long clientBean);
-	public List<ClientBean> findAllClients();
-	public ClientBean updateClient(ClientBean clientBean);
-	public List<ClientBean>deleteClientById(Long id);
+	public ClientDto saveClient(ClientDto clientBean);
+	public ClientDto findClientById(Long clientBean);
+	public List<ClientDto> findAllClients();
+	public ClientDto updateClient(ClientDto clientBean);
+	public List<ClientDto>deleteClientById(Long id);
 }

@@ -43,10 +43,10 @@ private static final long serialVersionUID = 1L;
 	private String city;
 	
 	@Column(name="STATE",nullable = false)
-	private String State;
+	private String state;
 	
 	@Column(name="COUNTRY",nullable = false)
-	private String Country;
+	private String country;
 	
 	@Column(name="ZIP",nullable = false)
 	private String zip;

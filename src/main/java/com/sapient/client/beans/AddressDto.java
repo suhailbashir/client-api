@@ -1,10 +1,6 @@
 package com.sapient.client.beans;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-
-import com.sapient.client.entity.Address;
-import com.sapient.client.entity.Client;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EmiBean implements Serializable {
-
+public class AddressDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private Long number;
-	private Double amount;
-	private LocalDate dueDate;
+	private String street;
+	private String city;
+	private String state;
+	private String country;
+	private String zip;
 }

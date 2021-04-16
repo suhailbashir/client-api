@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ClientBean implements Serializable {
+public class LoanDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private String clientName;
-	private List<LoanBean> loans;
-	private List<AddressBean> addresses;
+	private String loanAccountNumber;
+	private String loanType;
+	private List<EmiDto> listOfEmis;
 }
