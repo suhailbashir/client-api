@@ -43,20 +43,18 @@ public class Loan implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="LOAN_ACCOUNT_NUMBER",nullable = false,unique = true)
+	@Column(name="LOAN_ACCOUNT_NUMBER",nullable = false)
 	private String loanAccountNumber;
 
 	@Column(name="LOAN_TYPE",nullable = false)
 	private String loanType;
 	
-	@OneToMany( mappedBy = "loan",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "LOAN_ID")
 	private List<EMI>listOfEmis;
 	
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "CLIENT_ID")
-	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Client client;
 	
 	

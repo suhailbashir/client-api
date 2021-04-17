@@ -1,7 +1,7 @@
-package com.sapient.client.beans;
+package com.sapient.client.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EmiDto implements Serializable {
+public class ClientDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private Long number;
-	private Double amount;
-	private LocalDate dueDate;
-
+	private String clientName;
+	private List<LoanDto> loans;
+	private List<AddressDto> addresses;
 }

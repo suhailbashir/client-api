@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sapient.client.beans.AddressDto;
-import com.sapient.client.beans.ClientDto;
-import com.sapient.client.beans.EmiDto;
-import com.sapient.client.beans.LoanDto;
+import com.sapient.client.dto.AddressDto;
+import com.sapient.client.dto.ClientDto;
+import com.sapient.client.dto.EmiDto;
+import com.sapient.client.dto.LoanDto;
 import com.sapient.client.entity.Address;
 import com.sapient.client.entity.Client;
 import com.sapient.client.entity.EMI;
@@ -90,7 +90,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public ClientDto updateClient(ClientDto clientBean) {
+	public ClientDto updateClient(ClientDto clientBean,Long id) {
 		
 		Optional<Client> client = clientRepository.findById(clientBean.getId());
 		List<Loan> listOfLoans = new ArrayList<>();

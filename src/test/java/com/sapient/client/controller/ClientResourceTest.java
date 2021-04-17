@@ -20,10 +20,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sapient.client.beans.AddressDto;
-import com.sapient.client.beans.ClientDto;
-import com.sapient.client.beans.EmiDto;
-import com.sapient.client.beans.LoanDto;
+import com.sapient.client.dto.AddressDto;
+import com.sapient.client.dto.ClientDto;
+import com.sapient.client.dto.EmiDto;
+import com.sapient.client.dto.LoanDto;
 import com.sapient.client.service.ClientService;
 
 @WebMvcTest(value = ClientResource.class)

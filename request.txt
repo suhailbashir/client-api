@@ -1,120 +1,84 @@
 POST REQUEST
 ------------
 {
-  "clientName": "Amir",
+  "id": 0,
+  "clientName": "Suhail",
   "loans": [
     {
-      "loanAccountNumber": "123_LAN_221",
+      "id": 0,
+      "loanAccountNumber": "LAN_123",
       "loanType": "Saving",
       "listOfEmis": [
         {
+          "id": 0,
           "number": 1,
           "amount": 100,
-          "dueDate": "2021-04-14"
+          "dueDate": "2021-04-17"
         },
         {
+          "id": 0,
           "number": 2,
+          "amount": 100,
+          "dueDate": "2021-04-16"
+        },
+        {
+          "id": 0,
+          "number": 3,
           "amount": 100,
           "dueDate": "2021-04-15"
         }
       ]
     },
     {
-      "loanAccountNumber": "123_LAN_888",
+      "id": 0,
+      "loanAccountNumber": "LAN_124",
       "loanType": "Current",
       "listOfEmis": [
         {
+          "id": 0,
           "number": 1,
           "amount": 100,
-          "dueDate": "2021-04-14"
+          "dueDate": "2021-04-27"
         },
         {
+          "id": 0,
           "number": 2,
           "amount": 100,
-          "dueDate": "2021-04-15"
+          "dueDate": "2021-04-28"
+        },
+        {
+          "id": 0,
+          "number": 3,
+          "amount": 100,
+          "dueDate": "2021-04-29"
         }
       ]
     }
   ],
   "addresses": [
     {
-      "street": "124",
+      "id": 0,
+      "street": "1234",
       "city": "Jaipur",
-      "zip": "67676",
       "state": "Rajasthan",
-      "country": "India"
+      "country": "India",
+      "zip": "19001"
     },
     {
-      "street": "12",
+      "id": 0,
+      "street": "777",
       "city": "Srinagar",
-      "zip": "8888",
       "state": "JK",
-      "country": "India"
-    }
-  ]
-}
------------------------
-PUT REQUEST
-----------------------
-{
-  "id": 1,
-  "clientName": "Amir Updated",
-  "loans": [
-    {
-      "id": 4,
-      "loanAccountNumber": "123_LAN_221",
-      "loanType": "Saving Updated",
-      "listOfEmis": [
-        {
-          "id": 5,
-          "number": 1,
-          "amount": 100,
-          "dueDate": "2021-04-14"
-        },
-        {
-          "id": 6,
-          "number": 2,
-          "amount": 100,
-          "dueDate": "2021-04-15"
-        }
-      ]
+      "country": "India",
+      "zip": "190018"
     },
     {
-      "id": 7,
-      "loanAccountNumber": "123_LAN_888",
-      "loanType": "Current",
-      "listOfEmis": [
-        {
-          "id": 8,
-          "number": 1,
-          "amount": 100,
-          "dueDate": "2021-04-14"
-        },
-        {
-          "id": 9,
-          "number": 2,
-          "amount": 100,
-          "dueDate": "2021-04-15"
-        }
-      ]
-    }
-  ],
-  "addresses": [
-    {
-      "id": 2,
-      "street": "124",
-      "city": "Jaipur",
-      "zip": "67676",
-      "state": "Rajasthan",
-      "country": "India"
-    },
-    {
-      "id": 3,
-      "street": "12",
-      "city": "Srinagar Updated",
-      "zip": "8888",
-      "state": "JK",
-      "country": "India"
+      "id": 0,
+      "street": "555",
+      "city": "Delhi",
+      "state": "Delhi",
+      "country": "India",
+      "zip": "7878787"
     }
   ]
 }

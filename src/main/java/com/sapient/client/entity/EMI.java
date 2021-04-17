@@ -47,9 +47,7 @@ public class EMI  implements Serializable {
 	@Column(name = "DUE_DATE",nullable = false)
 	private LocalDate dueDate;
 	
-	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "LOAN_ID")
-	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Loan loan;
 	
 	

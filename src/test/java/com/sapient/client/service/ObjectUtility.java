@@ -8,10 +8,10 @@ import java.util.Optional;
 
 import org.aspectj.apache.bcel.generic.InstructionConstants.Clinit;
 
-import com.sapient.client.beans.AddressDto;
-import com.sapient.client.beans.ClientDto;
-import com.sapient.client.beans.EmiDto;
-import com.sapient.client.beans.LoanDto;
+import com.sapient.client.dto.AddressDto;
+import com.sapient.client.dto.ClientDto;
+import com.sapient.client.dto.EmiDto;
+import com.sapient.client.dto.LoanDto;
 import com.sapient.client.entity.Address;
 import com.sapient.client.entity.Client;
 import com.sapient.client.entity.EMI;

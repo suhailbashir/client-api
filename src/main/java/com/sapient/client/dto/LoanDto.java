@@ -1,6 +1,7 @@
-package com.sapient.client.beans;
+package com.sapient.client.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddressDto implements Serializable {
+public class LoanDto implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private String street;
-	private String city;
-	private String state;
-	private String country;
-	private String zip;
+	private String loanAccountNumber;
+	private String loanType;
+	private List<EmiDto> listOfEmis;
 }

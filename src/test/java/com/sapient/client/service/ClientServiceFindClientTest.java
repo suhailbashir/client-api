@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.sapient.client.beans.ClientDto;
+import com.sapient.client.dto.ClientDto;
 import com.sapient.client.entity.Client;
 import com.sapient.client.repository.ClientRepository;
 

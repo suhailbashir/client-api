@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -40,12 +41,12 @@ public class Client implements Serializable {
 	@Column(name = "CLIENT_NAME", nullable = false)
 	private String clientName;
 
-	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "CLIENT_ID")
 	private List<Loan> loans;
 
-	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "CLIENT_ID")
 	private List<Address> addresses;
 
 }

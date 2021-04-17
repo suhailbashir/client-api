@@ -51,9 +51,7 @@ private static final long serialVersionUID = 1L;
 	@Column(name="ZIP",nullable = false)
 	private String zip;
 	
-	@ManyToOne(cascade  = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "CLIENT_ID")
-	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Client client;
 	
 	
